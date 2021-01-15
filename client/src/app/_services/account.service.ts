@@ -1,4 +1,4 @@
-import { User } from './../../API/_models/users';
+import { User } from '../_models/users';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators'

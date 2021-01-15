@@ -1,5 +1,5 @@
-import { AccountService } from './../../_services/account.service';
-import { User } from './../../../API/_models/users';
+import { AccountService } from './_services/account.service';
+import { User } from './_models/users';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
