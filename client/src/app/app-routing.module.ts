@@ -10,6 +10,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MemberDetailComponent } from './members/member-detail/member-detail.component';
 import { AuthGuard } from './_guards/auth.guard';
+import { TestErrorsComponent } from './errors/test-errors/test-errors.component';
 
 const routes: Routes = [
   {'path': '', component: HomeComponent},
@@ -25,6 +26,7 @@ const routes: Routes = [
       {'path': 'messages', component: MessagesComponent},
     ]
   },
+  {'path': 'errors', component: TestErrorsComponent},
   {'path': 'not-found', component: NotFoundComponent},
   {'path': 'server-error', component: ServerErrorComponent},
   {'path': '**', component: NotFoundComponent, pathMatch: 'full'},
