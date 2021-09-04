@@ -18,7 +18,9 @@ export class MemberListComponent implements OnInit {
   user: User;
   genderList = [{value: 'male', display: 'Males'}, {value: 'female', display: 'Females'}];
 
-  constructor(private memberService: MembersService) {}
+  constructor(private memberService: MembersService) {
+    this.userParams = this.memberService.getUserParams();
+  }
 
   ngOnInit(): void {
     this.loadMembers();
