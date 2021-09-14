@@ -1,14 +1,14 @@
-import { BusyService } from './busy.service';
-import { Group } from './../_models/group';
-import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
-import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
-import { Message } from '../_models/message';
-import { User } from '../_models/users';
+import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { Group } from '../_models/group';
+import { Message } from '../_models/message';
+import { User } from '../_models/users';
+import { BusyService } from './busy.service';
+import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
 
 @Injectable({
   providedIn: 'root'
@@ -23,16 +23,15 @@ export class MessageService {
   constructor(private http: HttpClient, private busyService: BusyService) { }
 
   createHubConnection(user: User, otherUsername: string) {
-    this.busyService.busy()
+    this.busyService.busy();
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(this.hubUrl + 'message?user=' + otherUsername, {
         accessTokenFactory: () => user.token
       })
-    .withAutomaticReconnect()
-    .build()
+      .withAutomaticReconnect()
+      .build()
 
-    this.hubConnection
-      .start()
+    this.hubConnection.start()
       .catch(error => console.log(error))
       .finally(() => this.busyService.idle());
 
@@ -45,6 +44,7 @@ export class MessageService {
         this.messageThreadSource.next([...messages, message])
       })
     })
+
     this.hubConnection.on('UpdatedGroup', (group: Group) => {
       if (group.connections.some(x => x.username === otherUsername)) {
         this.messageThread$.pipe(take(1)).subscribe(messages => {
@@ -66,23 +66,22 @@ export class MessageService {
     }
   }
 
-  getMessages(pageNumber: number, pageSize: number, container){
+  getMessages(pageNumber, pageSize, container) {
     let params = getPaginationHeaders(pageNumber, pageSize);
     params = params.append('Container', container);
     return getPaginatedResult<Message[]>(this.baseUrl + 'messages', params, this.http);
   }
 
-  getMessageThread(username: string)
-  {
+  getMessageThread(username: string) {
     return this.http.get<Message[]>(this.baseUrl + 'messages/thread/' + username);
   }
 
-  async sendMessage(username: string, content: string){
+  async sendMessage(username: string, content: string) {
     return this.hubConnection.invoke('SendMessage', {recipientUsername: username, content})
       .catch(error => console.log(error));
   }
 
-  deleteMessage(id: number){
+  deleteMessage(id: number) {
     return this.http.delete(this.baseUrl + 'messages/' + id);
   }
 }
